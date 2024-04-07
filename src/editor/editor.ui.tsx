@@ -8,6 +8,12 @@ const EditorView = observer<{ editor: Editor }>(({ editor }) => {
 
   return (
     <View
+      onLayout={(e) => {
+        editor.onViewLayout({
+          width: e.nativeEvent.layout.width,
+          height: e.nativeEvent.layout.height,
+        });
+      }}
       style={{
         width: '100%',
         minHeight: 100,
@@ -25,14 +31,7 @@ const EditorView = observer<{ editor: Editor }>(({ editor }) => {
         }}
         style={[{ flex: 1, backgroundColor: 'pink' }]}
       />
-      <TextInput
-        multiline
-        value={editor.data.depth.body ?? ''}
-        onChangeText={(value) => {
-          editor.updateData('depth', { body: value });
-        }}
-        style={[{ flex: 1, backgroundColor: 'blue' }]}
-      />
+
       {editor.generating ? <ActivityIndicator size="small" /> : null}
       <Button
         title="generate"

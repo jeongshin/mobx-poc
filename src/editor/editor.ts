@@ -4,17 +4,16 @@ async function randomData(): Promise<IEditorData> {
   await new Promise((resolve) => setTimeout(resolve, 1000));
   return {
     title: 'Hello World',
-    depth: {},
   };
-}
-
-interface IRandomDataResponse {
-  title: string;
 }
 
 interface IEditorData {
   title: string;
-  depth: Record<string, any>;
+}
+
+interface IEditorStyle {
+  width: number;
+  height: number;
 }
 
 class Editor {
@@ -24,7 +23,11 @@ class Editor {
 
   public data: IEditorData = {
     title: '',
-    depth: {},
+  };
+
+  public style: IEditorStyle = {
+    width: 0,
+    height: 0,
   };
 
   constructor() {
@@ -38,17 +41,16 @@ class Editor {
     });
   }
 
+  public onViewLayout(layout: { width: number; height: number }) {
+    this.style = layout;
+    console.log('layout', layout);
+  }
+
   public updateData<T extends keyof IEditorData>(
     key: T,
-    value: T extends 'depth' ? Record<string, any> : IEditorData[T],
+    value: IEditorData[T],
   ) {
-    if (key === 'depth') {
-      // @ts-ignore
-      this.data.depth = { ...this.data.depth, ...value };
-    } else {
-      // @ts-ignore
-      this.data[key] = value;
-    }
+    this.data = { ...this.data, [key]: value };
   }
 
   public *generate(): Generator<Promise<IEditorData>, void, IEditorData> {
